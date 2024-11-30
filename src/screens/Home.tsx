@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, Pressable } from "react-native";
+import { View, Text, Image, StyleSheet, Pressable, FlatList, Modal } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import { useYogaHistory } from "../hooks/useYogaHistory";
+import { useNavigation } from "@react-navigation/native";
+import { Yoga } from "./Yoga";
 
 
 
 export function Home(){
-    const [isConnect, setIsConnect] = useState<boolean>(false);
+    // const [modalVisible, setModalVisible] = useState(false);
     return(
        
         <View style={{backgroundColor: 'black'}}>
@@ -14,7 +17,7 @@ export function Home(){
             </View>
 
             <View style={styles.matConnectContainer}>
-                <MatConnect connectStatus={isConnect}/>
+                <MatConnect/>
             </View>
 
             <View style={styles.yogaSessionContainer}>
@@ -48,61 +51,56 @@ function HeaderImage({username}:{username: string}){
     );
 }
 
-function MatConnect({connectStatus}:{connectStatus: boolean}){
-    let connectColor = 'red';
-    let connectText = 'Disconnected';
-    let buttontext = 'Connect'
-    if(connectStatus === false){
-        connectColor = 'red';
-        connectText='Disconnected';
-        buttontext = 'Connect'
-    }else{
-        connectColor= 'green';
-        connectText='Connected';
-        buttontext='Disconnect';
-    }
+function MatConnect(){
+    const [isConnect, setIsConnect] = useState<boolean>(false);
+    const navigation = useNavigation();
+    const handleNavigateToYoga = () => {
+        navigation.navigate('Yoga'); // Navigate to Yoga screen
+    };
+
+    let connectColor = isConnect ? 'green' : 'red';
+    let connectText = isConnect ? 'Connected' : 'Disconnected';
+    let buttonText = isConnect ? 'Disconnect' : 'Connect';
     return(
+
         <View>
             <View style={styles.matInfoContainer}>
 
                 <View style={styles.matStatusContainer}>
                         <Image tintColor={connectColor} style={{height: '40%', width: '40%'}} source={require('../assets/images/yoga-mat.png')}></Image>
-
-                        {/* <Feather name="bluetooth" size={50} color={connectColor} /> */}
-                    
-                        <Text style={{marginTop: 15, fontWeight: 600}}>{connectText}</Text>
+                        <Text style={{marginTop: 15, fontWeight: 600, fontSize:12 }}>{connectText}</Text>
                 </View>
 
                 <View style={styles.matModelContainer}>
-                    <View style={styles.deviceInfo}>
-                        <Text style={{fontWeight: 600, marginRight: 2}}>
+                    {/* <View style={styles.deviceInfo}>
+                        <Text style={{fontWeight: 600, marginRight: 2,fontSize:12}}>
                             Device: 
                         </Text>
-                        <Text >
+                        <Text style={{fontSize:12}}>
                             Smart Yoga Mat Pro
                         </Text>
-                    </View>
+                    </View> */}
                     <View style={styles.deviceInfo}>
-                        <Text style={{fontWeight: 600, marginRight: 2}}>
+                        <Text style={{fontWeight: 600, marginRight: 2,fontSize:12}}>
                             Model:
                         </Text>
-                        <Text >
+                        <Text style={{fontSize:12}}>
                             SYMP2024
                         </Text>
                     </View>
                     <View style={styles.deviceInfo}>
-                        <Text style={{fontWeight: 600, marginRight: 2}}>
+                        <Text style={{fontWeight: 600, marginRight: 2,fontSize:12}}>
                             Firmware Version: 
                         </Text>
-                        <Text >
+                        <Text style={{fontSize:12}} >
                             1.2.3
                         </Text>
                     </View>
                     <View style={styles.deviceInfo}>
-                        <Text style={{fontWeight: 600, marginRight: 2}}>
+                        <Text style={{fontWeight: 600, marginRight: 2,fontSize:12}}>
                             Battery Level:  
                         </Text>
-                        <Text >
+                        <Text style={{fontSize:12}}  >
                             75%
                         </Text>
                     </View>
@@ -110,51 +108,66 @@ function MatConnect({connectStatus}:{connectStatus: boolean}){
 
             </View>
             <View style={styles.matButtonContainer}>
-                <MatButton text={buttontext}/>
-                <MatButton text='Start Yoga'/>
+                <MatButton consoleText="connectbuttonpressed"  text={buttonText} onPress={()=>setIsConnect(!isConnect)}/>
+                <MatButton consoleText="startyogabutton pressed" text='Start Yoga' onPress={handleNavigateToYoga}/>
             </View>
         </View>
+    );
+}
+
+function MatButton({ text, onPress, consoleText }: { text: string, onPress:()=>void, consoleText: string }) {
+    return (
+      <Pressable style={styles.buttonContainer} onPress={()=>{
+        console.log(consoleText);
+        onPress();
+      }}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>{text}</Text>
+        </View>
+      </Pressable>
     );
 }
 
 function RecentYogaSession(){
+    const yogaHistory = useYogaHistory();
     return(
         <View >
-            <Text style={{textAlign: 'center', marginTop: 10, fontWeight: 800, fontSize: 20}}>Recent Yoga Session</Text>
-            <View>
-                <YogaSessionCard/>
-                <YogaSessionCard/>
+            <Text style={{textAlign: 'center', marginVertical: 10, fontWeight: 800, fontSize: 16}}>Recent Yoga Session</Text>
+            <View style={{ marginBottom: 10, height: '75%'}}>
+            
+                        <FlatList
+                            data={yogaHistory} //this take array of items to be rendered
+                            renderItem={({ item }) =>(
+                                <YogaSessionCard title={item.title} duration={item.duration} date={item.date} />
+                            )}
+                            horizontal={false}
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={item => item.title}
+                            initialNumToRender={2}
+                            style={{marginBottom: 5}}
+                        />
             </View>
         </View>
     );
 }
 
-function YogaSessionCard(){
+function YogaSessionCard({title, date, duration}: {title: string, date: string, duration: string}){
     return(
         <View style={styles.sessionCard}>
             <View style={styles.sessionCardText}>
-                <Text style={{fontSize: 20, fontWeight: 600, color: 'white', letterSpacing: 1}}>Relaxation Yoga</Text>
-                <Text style={{color: 'white'}}>Date: 2024-11-24</Text>
-                <Text style={{color: 'white'}}>Duration: 30 min</Text>
+                <Text style={{fontSize: 13, fontWeight: 600, color: 'white', letterSpacing: 1}}>{title}</Text>
+                <Text style={{fontSize: 11,color: 'white'}}>Date: {date}</Text>
+                <Text style={{fontSize: 11,color: 'white'}}>Duration: {duration}</Text>
             </View>
             <View style={styles.sessionCardButton}>
-                <Pressable style={styles.viewDetailButton}>
-                        <Text style={{textAlign: 'center', color: 'white'}}>View Details</Text>
+                <Pressable style={styles.viewDetailButton} >
+                        <Text style={{textAlign: 'center', color: 'white',fontSize: 11,}}>View Details</Text>
                 </Pressable>
             </View>
         </View>
     );
 }
 
-function MatButton({ text }: { text: string }) {
-    return (
-      <Pressable style={styles.buttonContainer}>
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>{text}</Text>
-        </View>
-      </Pressable>
-    );
-  }
 
 const styles = StyleSheet.create({
     headerImageContainer:{
@@ -253,7 +266,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     // Add responsive font size or adjust as needed
-    fontSize: 16,
+    fontSize: 12,
     },
     yogaSessionContainer:{
         backgroundColor: '#ECDFCC',
@@ -264,7 +277,7 @@ const styles = StyleSheet.create({
         elevation: 10
     },
     sessionCard:{
-        height:'40%',
+        height:72,
         marginTop: 10,
         backgroundColor:'#3C3D37',
         flexDirection: 'row',
@@ -275,14 +288,15 @@ const styles = StyleSheet.create({
         width: '50%',
         marginVertical: '5%',
         justifyContent: 'center',
-        marginLeft: 10
+        marginLeft: 10,
+       
     },
     sessionCardButton:{
         width: '30%',
         marginVertical: '5%',
         marginRight: 10,
         justifyContent: 'center',
-        marginLeft: 30
+        marginLeft: 30,
 
     },
     viewDetailButton:{
@@ -292,7 +306,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         borderWidth: 1,
         borderRadius: 20,
-        borderColor: 'white'
-    }
-    
+        borderColor: 'white',
+    },
 });

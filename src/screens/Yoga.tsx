@@ -72,8 +72,8 @@ function RecommendationCard({name, info}:{name:string, info: string}){
                 <Image style={{resizeMode: 'cover', flex: 1}} source={{uri:'https://images.pexels.com/photos/1051838/pexels-photo-1051838.jpeg?cs=srgb&dl=pexels-prasanthinturi-1051838.jpg&fm=jpg'}}/>
             </View>
             <View style={styles.recommendationLabel}>
-                <Text style={{color: 'white'}}>{name}</Text>
-                <Text style={{color: 'white'}}>{info}</Text>
+                <Text style={{color: 'white', fontSize:12}}>{name}</Text>
+                <Text style={{color: 'white', fontSize:10}}>{info}</Text>
             </View>
         </Pressable>
     );
@@ -82,7 +82,7 @@ function RecommendationCard({name, info}:{name:string, info: string}){
 function PlayButton(){
     return(
         <Pressable>
-            <View style={{backgroundColor: '#3C3D37', width: 70, height: 70, borderRadius: '50', justifyContent: 'center', marginTop:10, alignItems: 'center'}}>
+            <View style={{backgroundColor: '#3C3D37', width: 65, height: 65, borderRadius: '50', justifyContent: 'center', marginVertical:10, alignItems: 'center'}}>
                 <Image tintColor={'white'} style={{height:'60', width:'60', flex:1}} resizeMode="contain" source={require('../assets/images/play.png')}></Image>
             </View>
         </Pressable>
@@ -94,23 +94,31 @@ function MatButton({label}:{label:string }){
     return(
         <Pressable style={{width: '25%'}}>
             <View style={{backgroundColor: '#3C3D37', height: '60%', width: '100%', borderRadius: '50%', justifyContent: 'center'}}>
-                <Text style={{textAlign: 'center', color: 'white', fontWeight: 400}}>{label}</Text>
+                <Text style={{textAlign: 'center', color: 'white', fontWeight: 400, fontSize: 10}}>{label}</Text>
             </View>
         </Pressable>
     );
 }
-
+//music image deni hai aur onPress, yahi dikkat hai
 function MusicCard({musicName, musicUrl}:{musicName: string, musicUrl:string}){
     return(
-        <Pressable style={{width:'102', height: '100%', marginHorizontal: 10}}>
+        <Pressable onPress={playMusic} style={{width:'90', height: '100%', marginHorizontal: 10}}>
             <View style={{backgroundColor: '#3C3D37', height: '100%', alignItems: 'center'}}>
-                <View style={{ position: 'absolute', bottom: 0}}>
-                    <Text style={{textAlign: 'center', color: 'white', fontWeight: 400, }}>{musicName}</Text>
+                <View style={{backgroundColor: '', width: '100%' }}>
+                    <Image resizeMode="cover" style={{width: "100%"}}  source={require('../assets/images/musicimage.jpg')}/>
                 </View>
-                
+                <View style={{ position: 'absolute', bottom: 0, backgroundColor:'#3C3D37', width: '100%'}}>
+                    <Text style={{textAlign: 'center', color: 'white', fontWeight: 400,fontSize: 10, marginVertical: 2,  }}>{musicName}</Text>
+                </View>
             </View>
         </Pressable>
 
+    );
+}
+
+function playMusic(){
+    return(
+        <View></View>
     );
 }
 
@@ -128,7 +136,7 @@ const styles = StyleSheet.create({
     recommendationCardContainer:{
         height: '90%',
         backgroundColor: '#3C3D37',
-        width:'172',
+        width:145,
         marginHorizontal: 7,
         marginTop: 10
     },
