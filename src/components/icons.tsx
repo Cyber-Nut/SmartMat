@@ -24,6 +24,9 @@ const Icons = ({name}: IconsProps)=>{
         case 'ios':
             return <Icon name="apple" size={30} color="black"/>;
             break;
+        case 'cross':
+            return <Icon name="close" size={25} color="white"/>;
+            break;
         default:
             break;
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, SafeAreaView, StyleSheet, Pressable, Image } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, Pressable, Image, Alert } from "react-native";
 import { FlatList } from "react-native";
 import useMusicList from "../hooks/useMusicList";
 import usePreset from "../hooks/usePreset";
@@ -32,9 +32,9 @@ export function Yoga(){
             <View style={styles.matControl}>
                 <Text style={{fontWeight: 600, marginTop: 10, fontSize: 20,color:'white'}}>Control Your Mat</Text>
                 <View style={styles.matButtonContainer}>
-                    <MatButton label="Warm-Up" />
-                    <MatButton label="Yoga" />
-                    <MatButton label="Relax" />
+                    <MatButton label="Warm-Up" onPress={WarmUpButton}/>
+                    <MatButton label="Yoga" onPress={YogaButton} />
+                    <MatButton label="Relax" onPress={RelaxButton} />
                 </View>
             </View>
 
@@ -55,7 +55,7 @@ export function Yoga(){
                         />
                     </>
                     </View>
-                    <View style={{ marginTop: 15, alignItems:'center', flex: 1}}>
+                    <View style={{ marginVertical: 15, alignItems:'center'}}>
                         <PlayButton/>
                     </View>
                 </View>
@@ -63,6 +63,16 @@ export function Yoga(){
             </View>
         </SafeAreaView>
     );
+}
+
+const WarmUpButton = ()=>{
+    Alert.alert('Warm Up started');
+}
+const YogaButton = ()=>{
+    Alert.alert('Yoga started');
+}
+const RelaxButton = ()=>{
+    Alert.alert('Relax started');
 }
 
 function RecommendationCard({name, info}:{name:string, info: string}){
@@ -82,7 +92,7 @@ function RecommendationCard({name, info}:{name:string, info: string}){
 function PlayButton(){
     return(
         <Pressable>
-            <View style={{backgroundColor: '#3C3D37', width: 65, height: 65, borderRadius: '50', justifyContent: 'center', marginVertical:10, alignItems: 'center'}}>
+            <View style={{backgroundColor: '#3C3D37', width: 50, height: 50, borderRadius: '50', justifyContent: 'center', marginVertical:10, alignItems: 'center'}}>
                 <Image tintColor={'white'} style={{height:'60', width:'60', flex:1}} resizeMode="contain" source={require('../assets/images/play.png')}></Image>
             </View>
         </Pressable>
@@ -90,9 +100,9 @@ function PlayButton(){
 }
 
 
-function MatButton({label}:{label:string }){
+function MatButton({label, onPress}:{label:string, onPress: ()=>void }){
     return(
-        <Pressable style={{width: '25%'}}>
+        <Pressable onPress={onPress} style={{width: '25%'}}>
             <View style={{backgroundColor: '#3C3D37', height: '60%', width: '100%', borderRadius: '50%', justifyContent: 'center'}}>
                 <Text style={{textAlign: 'center', color: 'white', fontWeight: 400, fontSize: 10}}>{label}</Text>
             </View>

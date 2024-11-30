@@ -4,6 +4,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { useYogaHistory } from "../hooks/useYogaHistory";
 import { useNavigation } from "@react-navigation/native";
 import { Yoga } from "./Yoga";
+import { YogaSessionDetail } from "../components/YogaSessionDetail";
 
 
 
@@ -152,6 +153,14 @@ function RecentYogaSession(){
 }
 
 function YogaSessionCard({title, date, duration}: {title: string, date: string, duration: string}){
+    const [isModalVisible, setModalVisible] = useState(false); // State for modal visibility
+    const viewDetailButtonHandler = () => {
+        setModalVisible(true); // Open modal
+      };
+    
+      const closeModalHandler = () => {
+        setModalVisible(false); // Close modal
+      };
     return(
         <View style={styles.sessionCard}>
             <View style={styles.sessionCardText}>
@@ -160,13 +169,15 @@ function YogaSessionCard({title, date, duration}: {title: string, date: string, 
                 <Text style={{fontSize: 11,color: 'white'}}>Duration: {duration}</Text>
             </View>
             <View style={styles.sessionCardButton}>
-                <Pressable style={styles.viewDetailButton} >
+                <Pressable style={styles.viewDetailButton} onPress={viewDetailButtonHandler} >
                         <Text style={{textAlign: 'center', color: 'white',fontSize: 11,}}>View Details</Text>
                 </Pressable>
             </View>
+            <YogaSessionDetail title={title} isVisible={isModalVisible} onClose={closeModalHandler} />
         </View>
     );
 }
+
 
 
 const styles = StyleSheet.create({
@@ -270,7 +281,7 @@ const styles = StyleSheet.create({
     },
     yogaSessionContainer:{
         backgroundColor: '#ECDFCC',
-        height: '35%',
+        height: '34%',
         marginHorizontal: 10,
         marginTop: 20,
         borderRadius: 20,
